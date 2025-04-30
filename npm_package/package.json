@@ -1,13 +1,13 @@
 {
   "name": "peekchain",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Optional chaining safety checker CLI",
   "type": "module",
   "main": "lib/check.js",
   "bin": {
     "peekchain": "./bin/peekchain.js"
   },
-  "author": "Raj Kishor Maharana",
+  "author": "Raj Kishor (mrajkishor331@gmail.com)",
   "license": "MIT",
   "keywords": [
     "optional-chaining",

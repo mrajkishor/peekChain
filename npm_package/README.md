@@ -72,7 +72,7 @@ done
 ## 📦 Local Development
 
 ```bash
-git clone https://github.com/yourusername/peekchain.git
+git clone https://github.com/mrajkishor/peekChain.git
 cd peekchain
 npm install
 node lib/check.js yourfile.js
@@ -90,6 +90,6 @@ node lib/check.js yourfile.js
 
 ## 📄 License
 
-MIT © Raj Kishor (mrajkishro331@gmail.com)
+MIT © Raj Kishor (mrajkishor331@gmail.com)
 
 

@@ -1,6 +1,12 @@
+
 # 🛡️ PeekChain SafeGuard
 
+[![npm version](https://img.shields.io/npm/v/peekchain.svg)](https://www.npmjs.com/package/peekchain)
+[![npm downloads](https://img.shields.io/npm/dm/peekchain.svg)](https://www.npmjs.com/package/peekchain)
+
 **peekchain** is a command-line tool and pre-commit hook that helps developers **prevent unsafe optional chaining usage** in JavaScript code — a case that standard ESLint often misses.
+
+🔗 [View on npm »](https://www.npmjs.com/package/peekchain)
 
 ---
 
@@ -16,12 +22,14 @@
 
 ## 📦 Installation
 
-### Global (CLI available system-wide)
+### 🔧 Global Installation (CLI available everywhere)
+
 ```bash
 npm install -g peekchain
 ```
 
-### Local (as dev dependency for your project)
+### 📁 Local Project Installation (for teams/projects)
+
 ```bash
 npm install --save-dev peekchain
 ```
@@ -30,17 +38,20 @@ npm install --save-dev peekchain
 
 ## 🧪 Usage
 
-### CLI
+### CLI Mode
+
 ```bash
-peekchain <file.js>
+peekchain <yourfile.js>
 ```
 
-**Example:**
+#### Example
+
 ```bash
 peekchain src/components/UserCard.js
 ```
 
-If the file contains unsafe patterns, you’ll see an error like:
+If the file contains unsafe patterns, you’ll see a detailed error like:
+
 ```bash
 ❌ [Unsafe Access] src/UserCard.js:13
    ↪ user?.profile.name
@@ -49,27 +60,30 @@ If the file contains unsafe patterns, you’ll see an error like:
 
 ---
 
-## 🔗 Git Pre-commit Hook Integration (Optional)
+## 🔗 Pre-commit Hook (Recommended)
 
-Prevent bad patterns before code is committed.
+Prevent unsafe optional chaining from being committed.
 
-### 1. Install Husky
+### 1. Install Husky (if not already)
+
 ```bash
 npx husky-init && npm install
 ```
 
-### 2. Add peekchain to pre-commit
+### 2. Add peekchain to pre-commit hook
+
 ```bash
-npx husky add .husky/pre-commit "peekchain"
+npx husky add .husky/pre-commit "npx peekchain"
 ```
 
-Now it will auto-run on every commit and block unsafe code!
+Now every commit will be scanned and blocked if unsafe optional chaining is found ✅
 
 ---
 
-## 📏 What It Catches (Examples)
+## 📏 What It Catches
 
-### ✅ Safe Patterns
+### ✅ Safe Code Examples
+
 ```js
 user?.profile?.name;
 user?.getName?.();
@@ -77,43 +91,52 @@ obj?.[key]?.value;
 arr?.[0]?.length;
 ```
 
-### ❌ Unsafe Patterns Detected
+### ❌ Unsafe Code That Will Be Blocked
+
 ```js
-user?.profile.name;          // unsafe
-user?.getName().name;        // unsafe
-user?.[key].value;           // unsafe
-user?.name = 'Raj';          // unsafe
-++user?.count;               // unsafe
-delete user.name;            // unsafe
+user?.profile.name;         // unsafe
+user?.getName().name;       // unsafe
+user?.[key].value;          // unsafe
+user?.name = 'Raj';         // unsafe
+++user?.count;              // unsafe
+delete user.name;           // unsafe
 ```
 
 ---
 
-## 🎯 Why Use peekchain (vs ESLint alone)?
+## 🎯 Why Use PeekChain (vs ESLint only)?
 
-| ❓ What | ✅ ESLint | ✅ peekchain |
-|--------|-----------|--------------|
-| `user?.profile.name` detection | ❌ No | ✅ Yes |
-| Handles `delete`, `++`, `=` | ❌ No | ✅ Yes |
-| AST-level deep scan | ❌ Basic | ✅ Yes |
-| Pre-commit ready | ⚠️ Needs setup | ✅ Plug-and-play |
-
----
-
-## 🧠 Advanced Notes
-
-- Internally uses Babel to parse code and walks the AST for static analysis.
-- Currently supports `.js`, `.jsx`, `.mjs`, `.cjs`
-- Supports latest ECMAScript and optional chaining syntax.
+| 🔍 Case | ESLint | PeekChain |
+|--------|--------|------------|
+| Detects unsafe `user?.profile.name` | ❌ | ✅ |
+| Handles `++`, `=`, `delete` with `?.` | ❌ | ✅ |
+| AST-based validation | ⚠️ Partial | ✅ Deep |
+| Works with JSX and dynamic access | ⚠️ Limited | ✅ Fully supported |
+| Pre-commit blocking | ⚠️ Manual setup | ✅ Plug & Play |
 
 ---
 
-## 👨‍💻 Local Development
+## 🧠 Technical Details
 
-To run on your own file locally:
+- Uses Babel parser to convert your JS/JSX into AST.
+- Walks and inspects AST for unsafe chaining patterns.
+- Supports `.js`, `.jsx`, `.mjs`, `.cjs`.
+- Optimized for ECMAScript 2023+ syntax.
+
+---
+
+## 🛠️ Local Dev & Testing
+
+You can test locally by running:
 
 ```bash
 npx peekchain yourfile.js
+```
+
+Or use directly:
+
+```bash
+node node_modules/peekchain/checkOptionalChaining.js yourfile.js
 ```
 
 ---
@@ -121,3 +144,8 @@ npx peekchain yourfile.js
 ## 📚 License
 
 MIT License — Use freely, contribute gladly.
+
+---
+
+💡 Built with ❤️ to catch what linters miss.
+
