@@ -1,0 +1,23 @@
+{
+  "name": "peekchain",
+  "version": "1.0.0",
+  "description": "Optional chaining safety checker CLI",
+  "type": "module",
+  "main": "lib/check.js",
+  "bin": {
+    "peekchain": "./bin/peekchain.js"
+  },
+  "author": "Raj Kishor Maharana",
+  "license": "MIT",
+  "keywords": [
+    "optional-chaining",
+    "lint",
+    "null-check",
+    "cli",
+    "eslint"
+  ],
+  "dependencies": {
+    "@babel/parser": "^7.24.0",
+    "@babel/traverse": "^7.24.0"
+  }
+}
