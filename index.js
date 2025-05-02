@@ -11,7 +11,7 @@ const app = null;
 // 4. Peekchain will throw error if unsafe patterns detected
 
 // // //
-// // // 🔴 1. Direct Object Property Access
+// // // 🔴 1. Direct Object Property Access d
 // // //
 console.log(user.name);             // ❌ unsafe (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 console.log(user?.name);            // ✅ safe
