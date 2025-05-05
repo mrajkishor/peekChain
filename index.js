@@ -5,7 +5,7 @@
 // import special from 'dom.service.local';
 
 
-// const account = {
+// const account = { adsf
 //     profile: {
 //         name: "Syam"
 //     }
