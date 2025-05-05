@@ -108,17 +108,21 @@ node lib/check.js yourfile.js
 
 ## 📝 Changelog
 
-### v1.1.0 (May 2025)
+## 📝 Changelog
+
+### v1.0.4 (May 2025)
 
 - ✅ 100% test coverage with Jest
 - ➕ Added support for:
   - Invalid usage patterns (`user?.name = val`, `++user?.count`)
   - AST node types like class/function declarations and destructuring
+- 🐛 Fixed false positive on safe comparisons like `user?.name === 'Joe'`
 - 🧪 CLI entry path fully tested
 - 🛡️ Safer optional chaining validation
+
 
 ---
 
 ## 📄 License
 
-MIT © Raj Kishor (mrajkishor331@gmail.com)
+MIT © Rajkishor (mrajkishor331@gmail.com)
