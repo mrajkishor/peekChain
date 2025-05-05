@@ -1,3 +1,3 @@
 #!/usr/bin/env node
-import { runOptionalChainingCheck } from '../lib/check.js';
+const { runOptionalChainingCheck } = require('../lib/check.js');
 runOptionalChainingCheck();

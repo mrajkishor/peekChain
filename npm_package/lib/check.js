@@ -1,21 +1,20 @@
 // checkOptionalChaining.js
 
-import { existsSync, readFileSync } from 'fs';
-import path from 'path';
-import parser from '@babel/parser';
-import traverse from '@babel/traverse';
+const { existsSync, readFileSync } = require('fs');
+const path = require('path');
+const parser = require('@babel/parser');
+const traverse = require('@babel/traverse').default;
 
 // Needed for __dirname in ESM
-import { fileURLToPath } from 'url';
-import { argv } from 'process';
+// import { fileURLToPath } from 'url';
+// import { argv } from 'process';
 
-const traverseAST = traverse.default;
 
 function runOptionalChainingCheck() {
 
     try {
 
-        console.log(`Script started`);
+        console.log(`Script started...`);
         const STATIC_SAFE_CALLS = new Set();
 
 
@@ -72,9 +71,9 @@ function runOptionalChainingCheck() {
             if (/^\s*(import|export)\s/.test(line)) continue;
             for (const pattern of invalidChainingPatterns) {
                 if (pattern.test(line)) {
-                    console.log(`❌ [Invalid Pattern] ${file}:${i + 1}`);
-                    console.log(`   ↪ ${line.trim()}`);
-                    console.log(`   🚫 Optional chaining cannot be used on the left-hand side of assignment, delete, or increment/decrement.`);
+                    console.error(`❌ [Invalid Pattern] ${file}:${i + 1}`);
+                    console.error(`   ↪ ${line.trim()}`);
+                    console.error(`   🚫 Optional chaining cannot be used on the left-hand side of assignment, delete, or increment/decrement.`);
                     process.exit(1);
                 }
             }
@@ -143,10 +142,10 @@ function runOptionalChainingCheck() {
                 }
             }
 
-            if (unsafe) {
-                // Report or collect the error (here we just log for illustration)
-                console.error(`Unsafe optional call at line ${path.node.loc.start.line}: ${path.toString()}`);
-            }
+            // if (unsafe) { // never executed due to this earlier block
+            //     // Report or collect the error (here we just log for illustration)
+            //     console.error(`Unsafe optional call at line ${path.node.loc.start.line}: ${path.toString()}`);
+            // }
         }
 
 
@@ -193,7 +192,7 @@ function runOptionalChainingCheck() {
             // If we exited the loop without finding a non-optional link, the chain is fully optional
             return true;
         }
-        traverseAST(ast, {
+        traverse(ast, {
             ImportDeclaration(path) {
                 const importSource = path.node.source.value;
                 const isLocalImport = importSource.startsWith('./') || importSource.startsWith('../');
@@ -203,6 +202,8 @@ function runOptionalChainingCheck() {
                         const importedName = spec.local.name;
                         if (!isLocalImport) {
                             STATIC_SAFE_CALLS.add(importedName);
+                        } else {
+                            localIdentifiers.add(importedName);
                         }
                     }
                 });
@@ -219,7 +220,7 @@ function runOptionalChainingCheck() {
         // console.log(`STATIC_SAFE_CALLS populated`, [...STATIC_SAFE_CALLS]);
 
 
-        traverseAST(ast, {
+        traverse(ast, {
             VariableDeclarator(path) {
                 if (path.node.id.type === 'Identifier') {
                     // if (!STATIC_SAFE_CALLS.has(path.node.id.name)) {
@@ -263,10 +264,12 @@ function runOptionalChainingCheck() {
             }
         });
 
+        // console.log('localIdentifiers populated ', localIdentifiers);
+
         // console.log(JSON.stringify(ast, null, 2)); // 🌟 Full readable AST
 
         // ✅ Deep inspection for member, optional, and call expressions
-        traverseAST(ast, {
+        traverse(ast, {
             // MemberExpression(path) {
             //     const baseName = getBaseIdentifierName(path.node);
             //     const propertyName = path.node.property?.name;
@@ -330,9 +333,9 @@ function runOptionalChainingCheck() {
 
                     // You could collect this location or otherwise record the violation as needed
                     if (localIdentifiers.has(baseName)) {
-                        console.log(`❌ [Unsafe Access] ${file}:${line}`);
-                        console.log(`   ↪ ${path.toString()}`);
-                        console.log(`   ⚠️ '${baseName}' is local, but some part of the chain is accessed unsafely after optional chaining.`);
+                        console.error(`❌ [Unsafe Access] ${file}:${line}`);
+                        console.error(`   ↪ ${path.toString()}`);
+                        console.error(`   ⚠️ '${baseName}' is local, but some part of the chain is accessed unsafely after optional chaining.`);
                         errorFound = true;
                     }
                 }
@@ -346,9 +349,9 @@ function runOptionalChainingCheck() {
                     const baseName = getBaseIdentifierName(callee);
                     if (localIdentifiers.has(baseName) && !isFullyOptionalChain(path.get('callee'))) {
                         const line = path.node.loc?.start?.line || '?';
-                        console.log(`❌ [Unsafe Call Access] ${file}:${line}`);
-                        console.log(`   ↪ ${path.toString()}`);
-                        console.log(`   ⚠️ '${baseName}' is local, but function/property call chain is not safely guarded.`);
+                        console.error(`❌ [Unsafe Call Access] ${file}:${line}`);
+                        console.error(`   ↪ ${path.toString()}`);
+                        console.error(`   ⚠️ '${baseName}' is local, but function/property call chain is not safely guarded.`);
                         errorFound = true;
                     }
                 }
@@ -364,9 +367,9 @@ function runOptionalChainingCheck() {
                         (init.type === 'Literal' && init.value === null);
 
                     if (unsafe) {
-                        console.log(`❌ [Unguarded Destructuring] ${file}:${line}`);
-                        console.log(`   ↪ const { ... } = ${init?.name || 'null/undefined'}`);
-                        console.log(`   💡 Add fallback: const { name } = ${init?.name || 'obj'} ?? {}`);
+                        console.error(`❌ [Unguarded Destructuring] ${file}:${line}`);
+                        console.error(`   ↪ const { ... } = ${init?.name || 'null/undefined'}`);
+                        console.error(`   💡 Add fallback: const { name } = ${init?.name || 'obj'} ?? {}`);
                         errorFound = true;
                     }
                 }
@@ -390,9 +393,9 @@ function runOptionalChainingCheck() {
                     const base = arg.object.name;
                     if (localIdentifiers.has(base)) {
                         const line = path.node.loc?.start?.line || '?';
-                        console.log(`❌ [Unsafe Delete Access] ${file}:${line}`);
-                        console.log(`   ↪ ${path.toString()}`);
-                        console.log(`   ⚠️ '${base}' may be null/undefined. Use optional chaining: delete ${base}?.prop`);
+                        console.error(`❌ [Unsafe Delete Access] ${file}:${line}`);
+                        console.error(`   ↪ ${path.toString()}`);
+                        console.error(`   ⚠️ '${base}' may be null/undefined. Use optional chaining: delete ${base}?.prop`);
                         errorFound = true;
                     }
                 }
@@ -423,15 +426,15 @@ function runOptionalChainingCheck() {
     }
 
 }
-// module.exports = { runOptionalChainingCheck }; // for mjs
-export { runOptionalChainingCheck };
+module.exports = { runOptionalChainingCheck }; // for mjs
+// export { runOptionalChainingCheck };for esm
 
 // ✅ Call runOptionalChainingCheck if run via `node checkOptionalChaining.js file.js`
-// if (require?.main === module) { // for mjs
-//     runOptionalChainingCheck();
-// }
-
-const currentFile = fileURLToPath(import.meta.url);
-if (argv[1] === currentFile) {
+if (require?.main === module) { // for mjs
     runOptionalChainingCheck();
 }
+
+// const currentFile = fileURLToPath(import.meta.url); // for esm
+// if (argv[1] === currentFile) {
+//     runOptionalChainingCheck();
+// }

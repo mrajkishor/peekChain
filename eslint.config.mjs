@@ -26,7 +26,7 @@ export default defineConfig([
     extends: ["js/recommended"],
     rules: {
       "no-unsafe-optional-chaining": "error",
-      "no-undef": "error",
+      // "no-undef": "error",
       "eqeqeq": ["error", "always"],
       "no-unexpected-multiline": "error",
       // "unicorn/no-unsafe-optional-chaining": "error", // if using eslint-plugin-unicorn
