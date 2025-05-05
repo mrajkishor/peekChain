@@ -110,15 +110,11 @@ node lib/check.js yourfile.js
 
 ## 📝 Changelog
 
-### v1.0.4 (May 2025)
+### v1.0.5 (October 2025)
 
-- ✅ 100% test coverage with Jest
-- ➕ Added support for:
-  - Invalid usage patterns (`user?.name = val`, `++user?.count`)
-  - AST node types like class/function declarations and destructuring
-- 🐛 Fixed false positive on safe comparisons like `user?.name === 'Joe'`
-- 🧪 CLI entry path fully tested
-- 🛡️ Safer optional chaining validation
+- 🧾 All logs now written to `logs/peekchain.log`
+- 🧹 Log file is cleared before each run
+- 🖥️ Console shows `PASS` or `FAIL` with absolute log file path
 
 
 ---

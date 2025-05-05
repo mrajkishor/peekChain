@@ -1,6 +1,6 @@
 {
   "name": "peekchain",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Optional chaining safety checker CLI",
   "main": "lib/check.js",
   "bin": {
