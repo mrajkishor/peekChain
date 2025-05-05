@@ -1,3 +1,13 @@
+import localUtil from './utils';
+import externalLib from 'axios';
+import special from 'dom.service.local';
+
+const result1 = localUtil?.fetchData.name; // ❌ unsafe
+const result2 = externalLib?.get.name;     // ✅ safe
+const result3 = special?.thing.name;       // ❌ should be skipped
+
+console.log(result1, result2, result3);
+
 const user = null;
 const list = null;
 const users = null;
