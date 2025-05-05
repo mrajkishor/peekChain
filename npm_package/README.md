@@ -108,9 +108,7 @@ node lib/check.js yourfile.js
 
 ## 📝 Changelog
 
-## 📝 Changelog
-
-### v1.0.5 (October 2025)
+### v1.0.5 (May 2025)
 
 - 🧾 All logs now written to `logs/peekchain.log`
 - 🧹 Log file is cleared before each run
