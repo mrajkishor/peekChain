@@ -7,6 +7,9 @@ jest.mock('fs', () => {
             const maybeNull = null;
             const { name } = maybeNull; // ❌ unsafe
         `),
+        writeFileSync: jest.fn(),
+        appendFileSync: jest.fn(),
+        mkdirSync: jest.fn()
     };
 });
 

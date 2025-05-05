@@ -10,6 +10,9 @@ jest.mock('fs', () => {
             ++user?.count;            // ❌ invalid increment
             user?.likes++;            // ❌ invalid post-increment
         `),
+        writeFileSync: jest.fn(),
+        appendFileSync: jest.fn(),
+        mkdirSync: jest.fn()
     };
 });
 

@@ -7,7 +7,8 @@ jest.mock('fs', () => ({
       // This line should trigger the uncovered error logs
       const localUtil = { fetch: () => {} };
       localUtil.fetch(); // 🚫 Unsafe call without optional chaining
-    `
+    `,
+    appendFileSync: jest.fn()
 }));
 
 // 👇 Mock process and console for test observation

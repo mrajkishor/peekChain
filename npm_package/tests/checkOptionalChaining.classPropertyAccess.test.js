@@ -10,6 +10,9 @@ jest.mock('fs', () => {
             const user = new User();
             const name = user?.getProfile().name; // ❌ unsafe
         `),
+        writeFileSync: jest.fn(),
+        appendFileSync: jest.fn(),
+        mkdirSync: jest.fn()
     };
 });
 

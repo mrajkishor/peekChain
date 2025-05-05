@@ -19,6 +19,9 @@ jest.mock('fs', () => {
         }
         export default UserProfile;
       `),
+    writeFileSync: jest.fn(),
+    appendFileSync: jest.fn(),
+    mkdirSync: jest.fn()
   };
 });
 

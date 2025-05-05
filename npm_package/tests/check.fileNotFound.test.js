@@ -1,6 +1,9 @@
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
-    existsSync: () => false
+    existsSync: () => false,
+    writeFileSync: jest.fn(),
+    appendFileSync: jest.fn(),
+    mkdirSync: jest.fn()
 }));
 jest.spyOn(process, 'exit').mockImplementation((code) => {
     throw new Error(`ProcessExit_${code}`);

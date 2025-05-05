@@ -15,6 +15,9 @@ jest.mock('fs', () => {
   const result1 = localUtil?.fetchData.name;
   const result4 = domUtil?.find().isValid();
 `),
+        writeFileSync: jest.fn(),
+        appendFileSync: jest.fn(),
+        mkdirSync: jest.fn()
 
     };
 });

@@ -11,6 +11,9 @@ jest.mock('fs', () => {
   ++user?.count;
   delete user.name;
         `),
+        writeFileSync: jest.fn(),
+        appendFileSync: jest.fn(),
+        mkdirSync: jest.fn()
     };
 });
 

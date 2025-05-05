@@ -8,6 +8,9 @@ jest.mock('fs', () => {
             delete user.name;        // ❌ unsafe
             delete user?.address;    // ✅ safe
         `),
+        writeFileSync: jest.fn(),
+        appendFileSync: jest.fn(),
+        mkdirSync: jest.fn()
     };
 });
 

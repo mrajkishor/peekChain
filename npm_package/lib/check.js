@@ -18,8 +18,13 @@ if (!existsSync(logDir)) {
 require('fs').writeFileSync(logFilePath, '', 'utf8');
 
 // Log helper function
+
 function log(message) {
     appendFileSync(logFilePath, message + '\n', 'utf8');
+    // Capture all logs in test mode for full error inspection
+    if (process.env.NODE_ENV === 'test') {
+        console.error(message);
+    }
 }
 
 // Needed for __dirname in ESM
