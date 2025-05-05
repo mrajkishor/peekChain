@@ -59,10 +59,12 @@ function runOptionalChainingCheck() {
 
         // ❌ Regex pre-checks for invalid optional chaining use
         const invalidChainingPatterns = [
-            /\+\+\s*[a-zA-Z_$][\w$]*\?\.\w+/, // ++user.count
-            /[a-zA-Z_$][\w$]*\?\.\w+\s*\+\+/, // user?.count++
-            /[a-zA-Z_$][\w$]*\?\.\w+\s*=/, //user?.name = 'x'
+            /\+\+\s*[a-zA-Z_$][\w$]*\?\.\w+/,         // ++user?.count
+            /[a-zA-Z_$][\w$]*\?\.\w+\s*\+\+/,         // user?.count++
+            /[a-zA-Z_$][\w$]*\?\.\w+\s*=(?!=|>)/      // user?.name = "x" but NOT ===, ==, =>
         ];
+
+
 
         // const lines = codeWithoutComments.split('\n');
         const lines = code.split('\n');

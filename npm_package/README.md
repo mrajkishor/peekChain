@@ -1,5 +1,7 @@
-
 # 🔍 Peekchain
+
+![npm](https://img.shields.io/npm/v/peekchain?color=blue)  
+🔒 **Catch unsafe optional chaining before it ships** — supports **CJS & ESM**, powered by Babel.
 
 > A CLI tool that performs **deep AST-level validation of JavaScript optional chaining** for null safety — beyond what ESLint can catch.
 
@@ -18,6 +20,11 @@ Optional chaining (e.g., `user?.profile?.name`) can **silently fail** or **crash
 - ❌ `user?.[key].name` → key access not safely chained  
 - ❌ `user?.name = "x"` → invalid assignment  
 - ❌ `delete user?.profile.name` → unsafe delete  
+- ❌ `++user?.count` → invalid prefix increment  
+- ❌ `user?.likes++` → invalid postfix increment  
+- ❌ `function f({user}) {}` → destructuring tracked  
+- ❌ `class A {}` → class declarations scanned  
+- ❌ `const {name} = user ?? {}` → safe fallback destructuring supported  
 - ✅ `user?.profile?.name` → safe
 
 ---
@@ -40,6 +47,17 @@ Example:
 ```bash
 peekchain index.js
 ```
+
+---
+
+## 🧪 Tested Coverage (100%)
+
+Peekchain now has full test coverage including:
+
+- ✔️ CLI entry point via `require.main === module`
+- ✔️ Misuse patterns like assignments & increments on optional chains
+- ✔️ Deep AST constructs (functions, classes, destructuring)
+- ✔️ Integration tested via `jest`, `fs`, `child_process`, mocks
 
 ---
 
@@ -84,12 +102,23 @@ node lib/check.js yourfile.js
 
 - [@babel/parser](https://babel.dev/docs/babel-parser)
 - [@babel/traverse](https://babel.dev/docs/babel-traverse)
-- Full ESM support
+- ✅ Supports analyzing JavaScript written in ES Modules (ESM)
+
+---
+
+## 📝 Changelog
+
+### v1.1.0 (May 2025)
+
+- ✅ 100% test coverage with Jest
+- ➕ Added support for:
+  - Invalid usage patterns (`user?.name = val`, `++user?.count`)
+  - AST node types like class/function declarations and destructuring
+- 🧪 CLI entry path fully tested
+- 🛡️ Safer optional chaining validation
 
 ---
 
 ## 📄 License
 
 MIT © Raj Kishor (mrajkishor331@gmail.com)
-
-

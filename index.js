@@ -11,13 +11,10 @@ const account = {
     }
 }
 
-if (account.profile.name === "Raj") { // unsafe
+if (account?.profile?.name === "Raj") { // unsafe
     //do something here. 
 }
 
-if (account?.profile?.name === "Raj") { // safe
-    //do something here. 
-}
 
 
 const result2 = externalLib?.get.name;     // ✅ safe (external)

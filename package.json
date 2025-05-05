@@ -19,6 +19,6 @@
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
-    "peekchain": "^1.0.0"
+    "peekchain": "^1.0.3"
   }
 }
