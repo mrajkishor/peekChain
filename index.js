@@ -4,6 +4,22 @@ import domUtil from './dom.helpers.util';
 import externalLib from 'axios';
 import special from 'dom.service.local';
 
+
+const account = {
+    profile: {
+        name: "Syam"
+    }
+}
+
+if (account.profile.name === "Raj") { // unsafe
+    //do something here. 
+}
+
+if (account?.profile?.name === "Raj") { // safe
+    //do something here. 
+}
+
+
 const result2 = externalLib?.get.name;     // ✅ safe (external)
 const result3 = special?.thing.name;       // ✅ safe (external) + the dom.service.local part should be skipped and not considered unsafe check
 
