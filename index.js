@@ -12,7 +12,7 @@ const account = {
 }
 
 if (account?.profile?.name === "Raj") { // unsafe
-    //do something here. 
+    //do something here.  asdf
 }
 
 
