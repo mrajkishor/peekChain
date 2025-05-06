@@ -6,14 +6,13 @@
 
 
 const account = {
-    adsf
     profile: {
         name: "Syam"
     }
 }
 
 if (account?.profile?.name === "Raj") { // unsafe
-    //do something here.  asdf adsf
+    //do something here.  asdf adsf ads
 }
 
 
