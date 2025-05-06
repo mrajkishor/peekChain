@@ -5,15 +5,16 @@
 // import special from 'dom.service.local';
 
 
-// const account = { adsf
-//     profile: {
-//         name: "Syam"
-//     }
-// }
+const account = {
+    adsf
+    profile: {
+        name: "Syam"
+    }
+}
 
-// if (account?.profile?.name === "Raj") { // unsafe
-//     //do something here.  asdf adsf
-// }
+if (account?.profile?.name === "Raj") { // unsafe
+    //do something here.  asdf adsf
+}
 
 
 
