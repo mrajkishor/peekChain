@@ -12,7 +12,7 @@ const account = {
 }
 
 
-account?.profile?.someFun().name;
+account?.profile?.someFun?.()?.name;
 
 account?.profile.someFun();
 
