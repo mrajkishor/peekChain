@@ -29,6 +29,10 @@ describe('Import Safety Rules', () => {
         errorLogs = [];
         jest.resetModules();
 
+        jest.spyOn(console, 'log').mockImplementation((...args) => {
+            errorLogs.push(args.join(' '));
+        });
+
         jest.spyOn(console, 'error').mockImplementation((...args) => {
             errorLogs.push(args.join(' '));
         });

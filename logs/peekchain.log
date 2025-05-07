@@ -2,4 +2,6 @@ Script started...
 fileName
 Analyzing file: E:\temp\Npm_pkg\peekChain\index.js
 Regex pre-checks completed
-All checks passed.
+
+E:\temp\Npm_pkg\peekChain\index.js:19 error: optional chaining starts but not all links use '?.' (optional-chaining-unsafe-call)
+

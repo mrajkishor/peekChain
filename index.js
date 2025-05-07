@@ -16,7 +16,7 @@ account.state = "avtive";
 
 account?.profile?.someFun?.().name;
 
-account?.profile?.someFun();
+account?.profile.someFun?.();
 
 // Fixes
 // 1 . account?.profile?.someFun(); // last funciton shoud n't be optional check

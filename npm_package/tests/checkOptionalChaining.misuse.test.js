@@ -22,7 +22,10 @@ beforeEach(() => {
     errorLogs = [];
     jest.resetModules();
 
-    jest.spyOn(console, 'log').mockImplementation(() => { });
+    jest.spyOn(console, 'log').mockImplementation((...args) => {
+        errorLogs.push(args.join(' '));
+    });
+
     jest.spyOn(console, 'error').mockImplementation((...args) => {
         errorLogs.push(args.join(' '));
     });
