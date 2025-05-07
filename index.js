@@ -11,9 +11,19 @@ const account = {
     }
 }
 
-if (account?.profile?.name === "Raj") { // unsafe
-    //do something here.  asdf adsf ads
-}
+
+account?.profile?.someFun().name;
+
+account?.profile.someFun();
+
+// Fixes
+// 1 . account?.profile?.someFun(); // last funciton shoud n't be optional check
+// 2. account?.profile?.someFun().name; // only this case check optional
+// 3. Manager says, its too verbal. need to fix it.
+
+// if (account.profile?.name === "Raj") { // unsafe a
+//     //do something here.  asdf adsf ads
+// }
 
 
 
