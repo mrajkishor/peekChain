@@ -57,19 +57,10 @@ describe('Import Safety Rules', () => {
         expect(exitError.message).toBe('ProcessExit_1');
 
         const joined = errorLogs.join('\n');
-
-        // ⛔ Should flag localUtil
-        expect(joined).toMatch(/↪ localUtil\?\..*fetchData\.name/);
-
-        // ⛔ Should flag localUtil
-        expect(joined).not.toMatch(/↪ domUtil\?\..*fetchData\.name/);
-
-        // ✅ Should NOT flag axios
-        expect(joined).not.toMatch(/externalLib/);
-
-        // ✅ Should NOT flag dom.service.local
-        expect(joined).not.toMatch(/special/);
-        expect(joined).not.toMatch(/dom\.service\.local/);
+        expect(joined).toMatch(/mockfile\.js:\d+ error optional-chaining-unsafe 'localUtil'/); // ⛔ should flag
+        expect(joined).not.toMatch(/domUtil/);         // ✅ should skip
+        expect(joined).not.toMatch(/externalLib/);     // ✅ should skip axios
+        expect(joined).not.toMatch(/special/);         // ✅ should skip dom.service.local
     });
 
 });

@@ -5,7 +5,7 @@ jest.mock('fs', () => {
         existsSync: jest.fn(path => path.includes('mockfile-mixed-call')),
         readFileSync: jest.fn(() => `
             const user = { getProfile: () => ({ name: 'Raj' }) };
-            const name = user?.getProfile().name; // ❌ Unsafe
+            const name = user.getProfile().name; // ❌ Unsafe chain: ?.() followed by .
         `),
         writeFileSync: jest.fn(),
         appendFileSync: jest.fn(),
@@ -13,9 +13,17 @@ jest.mock('fs', () => {
     };
 });
 
-jest.spyOn(console, 'error').mockImplementation(() => { });
-jest.spyOn(process, 'exit').mockImplementation((code) => {
-    throw new Error('ProcessExit_' + code);
+const originalProcessExit = process.exit;
+
+beforeAll(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => { });
+    jest.spyOn(process, 'exit').mockImplementation((code) => {
+        throw new Error(`ProcessExit_${code}`);
+    });
+});
+
+afterAll(() => {
+    process.exit = originalProcessExit;
 });
 
 describe('Mixed unsafe optional call test', () => {

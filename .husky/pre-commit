@@ -1,5 +1,5 @@
-# #!/bin/sh
+#!/bin/sh
 
 
-# #Uncomment this to test the pre-commit hook (peekChain)
-# sh scripts/pre-commit.sh
+#Uncomment this to test the pre-commit hook (peekChain)
+sh scripts/pre-commit.sh

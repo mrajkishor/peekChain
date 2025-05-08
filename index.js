@@ -4,6 +4,12 @@
 // import externalLib from 'axios';
 // import special from 'dom.service.local';
 
+import { useState } from 'react';
+
+
+const userName = useState[""];
+
+console.log("user name", userName);
 
 const account = {
     profile: {
@@ -16,7 +22,7 @@ account.state = "avtive";
 
 account?.profile?.someFun?.().name;
 
-account?.profile.someFun?.(); // something
+account?.profile.someFun?.(); // something happended to be true
 
 // Fixes
 // 1 . account?.profile?.someFun(); // last funciton shoud n't be optional check
