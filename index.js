@@ -2,9 +2,9 @@ import externalLib from 'axios';
 import special from 'dom.service.local';
 import localUtil from './utils';
 
-const result1 = localUtil?.fetchData?.name;
-const result2 = externalLib?.get.name;
-const result3 = special?.thing.name;
+const result1 = localUtil.fetchData.name;
+const result2 = externalLib.get.name;
+const result3 = special.thing.name;
 
 console.log(result1, result2, result3);
 
