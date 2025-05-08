@@ -17,5 +17,5 @@ console.log(user.profile.name);
 console.log(list[0]);
 console.log(users[0].name);
 user.getProfile?.();
-config.api.fetch?.();
+config.api.fetch?.(); // test
 
