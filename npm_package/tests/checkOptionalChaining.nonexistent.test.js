@@ -1,3 +1,5 @@
+const { runOptionalChainingCheck } = require('../lib/check.js');
+
 // Inline mock to simulate fs for a nonexistent file
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
@@ -20,12 +22,11 @@ describe('Nonexistent File Test', () => {
         });
         jest.spyOn(console, 'log').mockImplementation(() => { });
         jest.spyOn(console, 'error').mockImplementation(() => { });
-        jest.spyOn(console, 'warn').mockImplementation(() => { });
+        jest.spyOn(console, 'warn').mockImplementation(() => { }); // t
         jest.spyOn(console, 'info').mockImplementation(() => { });
     });
     it('should exit 0 for nonexistent file', () => {
         process.argv = ['node', 'checkOptionalChaining.js', './nonexistent.js'];
-        const { runOptionalChainingCheck } = require('../lib/check.js');
         expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_0');
     });
 });

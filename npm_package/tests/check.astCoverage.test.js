@@ -1,3 +1,6 @@
+const { runOptionalChainingCheck } = require('../lib/check.js');
+
+
 jest.mock('fs', () => ({
   ...jest.requireActual('fs'),
   existsSync: () => true,
@@ -30,7 +33,6 @@ describe('AST Node Coverage Test', () => {
   });
   it('should cover FunctionDeclaration, ClassDeclaration, and ObjectPattern destructuring in VariableDeclarator', () => {
     process.argv = ['node', 'check.js', './mockfile-all.js'];
-    const { runOptionalChainingCheck } = require('../lib/check.js');
-    expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1');
+    expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1'); // t
   });
 });

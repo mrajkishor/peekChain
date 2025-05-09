@@ -1,4 +1,5 @@
-const p = require('path');
+const { runOptionalChainingCheck } = require('../lib/check.js');
+
 
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
@@ -35,12 +36,11 @@ describe('Misuse Optional Chaining Test', () => {
 
     it('should detect misuse patterns like assignment or increment on optional chaining', () => {
         process.argv = ['node', 'checkOptionalChaining.js', './mockfile-misuse.js'];
-        const { runOptionalChainingCheck } = require('../lib/check.js');
 
         expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1');
 
         const joined = errorLogs.join('\n');
-        const misuseCount = (joined.match(/optional-chaining-misuse/g) || []).length;
+        const misuseCount = (joined.match(/optional-chaining-misuse/g) || []).length;  // t
         expect(misuseCount).toBe(0);
     });
 });

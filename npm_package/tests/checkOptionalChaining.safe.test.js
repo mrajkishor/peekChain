@@ -1,5 +1,6 @@
+const { runOptionalChainingCheck } = require('../lib/check.js');  // t
 
-// 🔥 Inline fs mock for this specific test file
+// Inline fs mock for this specific test file
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
     return {
@@ -35,7 +36,6 @@ describe('Safe Code Test', () => {
 
     it('should complete safely without triggering errors or exit', () => {
         process.argv = ['node', 'checkOptionalChaining.js', './mockfile-safe.js'];
-        const { runOptionalChainingCheck } = require('../lib/check.js');
         runOptionalChainingCheck();
 
         expect(processExitMock).not.toHaveBeenCalled(); // ✅ no exit is fine too

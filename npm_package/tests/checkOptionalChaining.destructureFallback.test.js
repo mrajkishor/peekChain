@@ -1,3 +1,5 @@
+const { runOptionalChainingCheck } = require('../lib/check.js');
+
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
     return {
@@ -22,9 +24,8 @@ describe('Destructure fallback test', () => {
             throw new Error(`ProcessExit_${code}`);
         });
     });
-    it('should detect destructuring from null/undefined', () => {
+    it('should detect destructuring from null/undefined', () => {  // t
         process.argv = ['node', 'checkOptionalChaining.js', './mockfile-destructure.js'];
-        const { runOptionalChainingCheck } = require('../lib/check.js');
         expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1');
     });
 });

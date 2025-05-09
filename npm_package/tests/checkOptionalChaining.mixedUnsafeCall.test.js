@@ -1,3 +1,5 @@
+const { runOptionalChainingCheck } = require('../lib/check.js');
+
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
     return {
@@ -7,7 +9,7 @@ jest.mock('fs', () => {
             const user = { getProfile: () => ({ name: 'Raj' }) };
             const name = user.getProfile().name; // ❌ Unsafe chain: ?.() followed by .
         `),
-        writeFileSync: jest.fn(),
+        writeFileSync: jest.fn(),  // t
         appendFileSync: jest.fn(),
         mkdirSync: jest.fn()
     };
@@ -30,7 +32,6 @@ describe('Mixed unsafe optional call test', () => {
     });
     it('should detect mixed safe/unsafe chaining', () => {
         process.argv = ['node', 'checkOptionalChaining.js', './mockfile-mixed-call.js'];
-        const { runOptionalChainingCheck } = require('../lib/check.js');
         expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1');
     });
 });

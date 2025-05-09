@@ -1,3 +1,5 @@
+const { runOptionalChainingCheck } = require('../lib/check.js');
+
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
     return {
@@ -23,9 +25,8 @@ describe('Delete property test', () => {
         });
 
     });
-    it('should detect unsafe delete usage', () => {
+    it('should detect unsafe delete usage', () => {  // t
         process.argv = ['node', 'checkOptionalChaining.js', './mockfile-delete.js'];
-        const { runOptionalChainingCheck } = require('../lib/check.js');
         expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1');
     });
 });

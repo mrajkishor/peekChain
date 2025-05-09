@@ -1,4 +1,5 @@
-// TEST: Direct call on local variable without optional chaining
+const { runOptionalChainingCheck } = require('../lib/check.js');
+
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -8,7 +9,7 @@ jest.mock('fs', () => ({
       const localUtil = { fetch: () => {} };
       localUtil.fetch(); // Unsafe call without optional chaining
     `,
-    appendFileSync: jest.fn()
+    appendFileSync: jest.fn()  // t
 }));
 
 
@@ -31,7 +32,7 @@ describe('CallExpression unsafe function call on local identifier', () => {
     });
     it('should trigger error log and exit with code 1', () => {
         process.argv = ['node', 'check.js', './mockfile-direct-call.js'];
-        const { runOptionalChainingCheck } = require('../lib/check.js');
+
 
         expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1');
 

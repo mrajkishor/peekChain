@@ -1,4 +1,5 @@
 // tests/checkOptionalChaining.callSafetyOnly.test.js
+const { runOptionalChainingCheck } = require('../lib/check.js');
 
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
@@ -10,7 +11,7 @@ jest.mock('fs', () => {
             a().get()?.nested?.().play.run(); // ❌ unsafe optional chain
         `),
         writeFileSync: jest.fn(),
-        appendFileSync: jest.fn(),
+        appendFileSync: jest.fn(),  // t
         mkdirSync: jest.fn(),
     };
 });
@@ -31,7 +32,6 @@ describe('CallExpression unsafe chain triggers checkOptionalChainSafety', () => 
 
     it('should trigger checkOptionalChainSafety and report unsafe optional call', () => {
         process.argv = ['node', 'checkOptionalChaining.js', './mockfile-callsafety.js'];
-        const { runOptionalChainingCheck } = require('../lib/check.js');
 
         expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1');
 

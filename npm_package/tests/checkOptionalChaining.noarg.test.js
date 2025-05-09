@@ -1,4 +1,7 @@
 // Inline mock: No file arg = no file check required, but we mock anyway
+const { runOptionalChainingCheck } = require('../lib/check.js');
+
+
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
     return {
@@ -19,11 +22,10 @@ describe('No Argument Provided Test', () => {
         jest.spyOn(console, 'log').mockImplementation(() => { });
         jest.spyOn(console, 'error').mockImplementation(() => { });
         jest.spyOn(console, 'warn').mockImplementation(() => { });
-        jest.spyOn(console, 'info').mockImplementation(() => { });
+        jest.spyOn(console, 'info').mockImplementation(() => { });  // t
     });
     it('should exit 0 if no file argument provided', () => {
         process.argv = ['node', 'checkOptionalChaining.js']; // No file
-        const { runOptionalChainingCheck } = require('../lib/check.js');
         expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_0');
     });
 });

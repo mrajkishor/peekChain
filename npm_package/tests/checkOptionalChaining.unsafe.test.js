@@ -1,5 +1,6 @@
+const { runOptionalChainingCheck } = require('../lib/check.js');
 
-// 🔥 Inline fs mock for this test only
+// Inline fs mock for this test only
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
     return {
@@ -32,7 +33,6 @@ describe('Unsafe Chaining Test', () => {
     });
     it('should exit 1 for unsafe chaining', () => {
         process.argv = ['node', 'checkOptionalChaining.js', './mockfile-unsafe.js'];
-        const { runOptionalChainingCheck } = require('../lib/check.js');
-        expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1');
+        expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1');  // t
     });
 });

@@ -1,3 +1,5 @@
+const { runOptionalChainingCheck } = require('../lib/check.js');
+
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
     return {
@@ -18,7 +20,6 @@ describe('Unexpected error handling', () => {
     });
     it('should catch and log unexpected exceptions', () => {
         process.argv = ['node', 'checkOptionalChaining.js', './mockfile-unexpected.js'];
-        const { runOptionalChainingCheck } = require('../lib/check.js');
-        expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1');
+        expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1');  // t
     });
 });

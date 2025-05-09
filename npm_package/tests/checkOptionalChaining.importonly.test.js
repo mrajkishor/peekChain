@@ -1,3 +1,6 @@
+const { runOptionalChainingCheck } = require('../lib/check.js');
+
+
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
     return {
@@ -44,7 +47,6 @@ describe('Import Safety Rules', () => {
 
     it('should flag unsafe access on local import, skip external, and skip dom.service.local', () => {
         process.argv = ['node', 'checkOptionalChaining.js', './mockfile.js'];
-        const { runOptionalChainingCheck } = require('../lib/check.js');
 
         let exitError = null;
         try {
@@ -58,7 +60,7 @@ describe('Import Safety Rules', () => {
 
         const joined = errorLogs.join('\n');
         expect(joined).toMatch(/mockfile\.js:\d+/);
-        expect(joined).toMatch(/'localUtil'.*accessed unsafely/);
+        expect(joined).toMatch(/'localUtil'.*accessed unsafely/);  // t
 
         expect(joined).not.toMatch(/externalLib/);     // ✅ should skip axios
         expect(joined).not.toMatch(/special/);         // ✅ should skip dom.service.local
