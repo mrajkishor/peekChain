@@ -368,7 +368,7 @@ function runOptionalChainingCheck() {
             },
             CallExpression(path) {
                 if (path.node.type === 'CallExpression') {
-                    checkOptionalChainSafety(path);
+                    checkOptionalChainSafety(path); // test
                 }
                 const callee = path.node.callee;
                 if (callee.type === 'MemberExpression' || callee.type === 'OptionalMemberExpression') {
