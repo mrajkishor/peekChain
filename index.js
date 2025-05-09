@@ -2,11 +2,11 @@ import externalLib from 'axios';
 import special from 'dom.service.local';
 import localUtil from './utils';
 
-const result1 = localUtil?.fetchData.name; // ❌ unsafe
+const result1 = localUtil.fetchData.name; // ❌ unsafe
 const result2 = externalLib?.get.name;     // ✅ safe
 const result3 = special?.thing.name;       // ❌ should be skipped adsf
 
-console.log(result1, result2, result3); // test
+console.log(result1, result2, result3); // test asd
 
 const user = null;
 const list = null;
@@ -83,18 +83,15 @@ delete user?.name;                 // ✅ safe
 // // // ❌ Misuse of Optional Chaining (invalid JavaScript)
 // // // These should be caught by regex + AST
 // // //
-// user?.name = "Raj";                 // ❌ invalid (caught by ESLint)
 
-// ++user?.count;                      // ❌ invalid (Caught by ESLint)
-// user?.likes++;                      // ❌ invalid (Caught by ESLint)
 
 // // //
 // // // 🔍 Advanced Patterns (require AST or ESLint)
 // // //
-user?.profile || {};                // ✅ fallback pattern (may hide errors) still safe
+const me = user?.profile || {};                // ✅ fallback pattern (may hide errors) still safe
 const { name } = user;              // ❌ unsafe destructuring (needs AST to catch)  (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 console.log("Name ", name)
-
+console.log(me);
 // // // Suggested ESLint rules to catch advanced cases:
 // // // "rules": {
 // // //   "no-unsafe-optional-chaining": "error",
