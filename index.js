@@ -59,7 +59,7 @@ console.log(users?.[0]?.name);      // ✅ safe
 // // // 🔴 5. Method Calls
 // // //
 user?.getProfile?.();                  // ❌ unsafe (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
-user?.getProfile();                  // ❌ unsafe  d (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
+user?.getProfile?.();                  // ❌ unsafe  d (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 user?.getProfile?.();                  // ❌ unsafe (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 user?.getProfile?.();               // ✅ safe
 
