@@ -8,7 +8,7 @@ const result3 = special.thing.name;
 
 console.log(result1, result2, result3);
 
-const user = null; // test 3
+const user = null; // test 3 3
 const list = null;
 const users = null;
 const config = null;
