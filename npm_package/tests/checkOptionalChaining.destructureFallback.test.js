@@ -13,12 +13,15 @@ jest.mock('fs', () => {
     };
 });
 
-jest.spyOn(console, 'error').mockImplementation(() => { });
-jest.spyOn(process, 'exit').mockImplementation((code) => {
-    throw new Error(`ProcessExit_${  code}`);
-});
+
 
 describe('Destructure fallback test', () => {
+    beforeEach(() => {
+        jest.spyOn(console, 'error').mockImplementation(() => { });
+        jest.spyOn(process, 'exit').mockImplementation((code) => {
+            throw new Error(`ProcessExit_${code}`);
+        });
+    });
     it('should detect destructuring from null/undefined', () => {
         process.argv = ['node', 'checkOptionalChaining.js', './mockfile-destructure.js'];
         const { runOptionalChainingCheck } = require('../lib/check.js');

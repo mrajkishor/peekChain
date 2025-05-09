@@ -54,7 +54,7 @@ console.log(users[0]?.name);         // ❌ unsafe (Uncaught by ESLint optional 
 console.log(users?.[0]?.name);      // ✅ safe
 
 // // //
-// // // 🔴 5. Method Calls test
+// // // 🔴 5. Method Calls test 1
 // // //
 user.getProfile();                  // ❌ unsafe (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 user?.getProfile();                  // ❌ unsafe  (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
@@ -92,8 +92,7 @@ delete user?.name;                 // ✅ safe
 // // //
 // // // 🔍 Advanced Patterns (require AST or ESLint)
 // // //
-const { name } = user;              // ❌ unsafe destructuring (needs AST to catch)  (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
-console.log("Name ", name)
+
 
 // // // Suggested ESLint rules to catch advanced cases:
 // // // "rules": {

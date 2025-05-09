@@ -7,11 +7,13 @@ jest.mock('fs', () => ({
       const res = arr?.[0]?.value;
     `
 }));
-jest.spyOn(process, 'exit').mockImplementation((code) => {
-    throw new Error(`ProcessExit_${code}`);
-});
-jest.spyOn(console, 'error').mockImplementation(() => { });
+beforeEach(() => {
+    jest.spyOn(process, 'exit').mockImplementation((code) => {
+        throw new Error(`ProcessExit_${code}`);
+    });
+    jest.spyOn(console, 'error').mockImplementation(() => { });
 
+});
 it('should not call process.exit with 1 for safe optional chaining', () => {
     process.argv = ['node', 'check.js', './mockfile-safe.js'];
     const { runOptionalChainingCheck } = require('../lib/check.js');

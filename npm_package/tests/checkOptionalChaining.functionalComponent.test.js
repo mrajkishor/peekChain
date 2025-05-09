@@ -1,4 +1,4 @@
-// 🧪 Inline fs mock for Dashboard.jsx
+// Inline fs mock for Dashboard.jsx
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
     return {
@@ -39,7 +39,7 @@ describe('Functional Dashboard.jsx Test', () => {
         runOptionalChainingCheck();
 
         expect(processExitMock).not.toHaveBeenCalledWith(1); // no error
-        // ✅ Allow harmless logs, fail only if real violations like "❌" or "🔥" are printed
+        // Allow harmless logs, fail only if real violations like "❌" or "🔥" are printed
         const errorMessages = consoleErrorMock.mock.calls.map(call => call.join(' '));
         const realErrors = errorMessages.filter(msg => /^❌|^🔥/.test(msg));
         expect(realErrors.length).toBe(0);

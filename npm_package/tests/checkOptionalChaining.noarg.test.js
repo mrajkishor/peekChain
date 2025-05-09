@@ -8,16 +8,19 @@ jest.mock('fs', () => {
     };
 });
 
-// Inline process/console mocks
-jest.spyOn(process, 'exit').mockImplementation((code) => {
-    throw new Error(`ProcessExit_${code}`);
-});
-jest.spyOn(console, 'log').mockImplementation(() => { });
-jest.spyOn(console, 'error').mockImplementation(() => { });
-jest.spyOn(console, 'warn').mockImplementation(() => { });
-jest.spyOn(console, 'info').mockImplementation(() => { });
+
 
 describe('No Argument Provided Test', () => {
+    beforeEach(() => {
+        // Inline process/console mocks
+        jest.spyOn(process, 'exit').mockImplementation((code) => {
+            throw new Error(`ProcessExit_${code}`);
+        });
+        jest.spyOn(console, 'log').mockImplementation(() => { });
+        jest.spyOn(console, 'error').mockImplementation(() => { });
+        jest.spyOn(console, 'warn').mockImplementation(() => { });
+        jest.spyOn(console, 'info').mockImplementation(() => { });
+    });
     it('should exit 0 if no file argument provided', () => {
         process.argv = ['node', 'checkOptionalChaining.js']; // No file
         const { runOptionalChainingCheck } = require('../lib/check.js');

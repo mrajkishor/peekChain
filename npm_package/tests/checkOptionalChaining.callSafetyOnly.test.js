@@ -1,16 +1,14 @@
-const p = require('path');
+// tests/checkOptionalChaining.callSafetyOnly.test.js
 
 jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
     return {
         ...actualFs,
-        existsSync: jest.fn((path) => path.includes('mockfile-misuse')),
+        existsSync: jest.fn(path => path.includes('mockfile-callsafety')),
         readFileSync: jest.fn(() => `
-      const user = { name: 'Raj' };
-      user?.name = "John";      // ❌ invalid assignment
-      ++user?.count;            // ❌ invalid increment
-      user?.likes++;            // ❌ invalid post-increment
-    `),
+            import a from './a.helper'; // 👈 makes 'a' a local identifier
+            a().get()?.nested?.().play.run(); // ❌ unsafe optional chain
+        `),
         writeFileSync: jest.fn(),
         appendFileSync: jest.fn(),
         mkdirSync: jest.fn(),
@@ -19,28 +17,25 @@ jest.mock('fs', () => {
 
 let errorLogs = [];
 
-describe('Misuse Optional Chaining Test', () => {
+describe('CallExpression unsafe chain triggers checkOptionalChainSafety', () => {
     beforeEach(() => {
         errorLogs = [];
         jest.resetModules();
-
         jest.spyOn(console, 'log').mockImplementation((...args) => {
             errorLogs.push(args.join(' '));
         });
-        jest.spyOn(console, 'error').mockImplementation(() => { });
         jest.spyOn(process, 'exit').mockImplementation((code) => {
             throw new Error(`ProcessExit_${code}`);
         });
     });
 
-    it('should detect misuse patterns like assignment or increment on optional chaining', () => {
-        process.argv = ['node', 'checkOptionalChaining.js', './mockfile-misuse.js'];
+    it('should trigger checkOptionalChainSafety and report unsafe optional call', () => {
+        process.argv = ['node', 'checkOptionalChaining.js', './mockfile-callsafety.js'];
         const { runOptionalChainingCheck } = require('../lib/check.js');
 
         expect(() => runOptionalChainingCheck()).toThrow('ProcessExit_1');
 
         const joined = errorLogs.join('\n');
-        const misuseCount = (joined.match(/optional-chaining-misuse/g) || []).length;
-        expect(misuseCount).toBe(0);
+        expect(joined).toMatch(/Unsafe Optional Call/);
     });
 });

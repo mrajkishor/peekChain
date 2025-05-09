@@ -15,20 +15,21 @@ jest.mock('fs', () => {
 
 let errorLogs = [];
 
-beforeEach(() => {
-    errorLogs = [];
-    jest.resetModules();
 
-    jest.spyOn(console, 'log').mockImplementation((...args) => {
-        errorLogs.push(args.join(' '));
-    });
-    jest.spyOn(console, 'error').mockImplementation(() => { });
-    jest.spyOn(process, 'exit').mockImplementation(code => {
-        throw new Error(`ProcessExit_${code}`);
-    });
-});
 
 describe('Class property unsafe chaining', () => {
+    beforeEach(() => {
+        errorLogs = [];
+        jest.resetModules();
+
+        jest.spyOn(console, 'log').mockImplementation((...args) => {
+            errorLogs.push(args.join(' '));
+        });
+        jest.spyOn(console, 'error').mockImplementation(() => { });
+        jest.spyOn(process, 'exit').mockImplementation(code => {
+            throw new Error(`ProcessExit_${code}`);
+        });
+    });
     it('should detect unsafe chaining from local import', () => {
         process.argv = ['node', 'checkOptionalChaining.js', './mockfile-class-prop.js'];
         const { runOptionalChainingCheck } = require('../lib/check.js');
@@ -40,6 +41,7 @@ describe('Class property unsafe chaining', () => {
         }
 
         const logJoined = errorLogs.join('\n');
-        expect(logJoined).toMatch(/optional-chaining-unsafe-call/);
+        expect(logJoined).toMatch(/mockfile-class-prop\.js:\d+/);
+        expect(logJoined).toMatch(/'user' is local, but function\/property call chain is not safely guarded/);
     });
 });

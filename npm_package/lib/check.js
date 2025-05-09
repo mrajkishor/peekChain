@@ -356,11 +356,11 @@ function runOptionalChainingCheck() {
                 }
             },
             CallExpression(path) {
-                if (path.node.type === 'CallExpression') {
-                    if (checkOptionalChainSafety(path, file)) {
-                        errorFound.value = true;
-                    }
+                // if (path.node.type === 'CallExpression') {
+                if (checkOptionalChainSafety(path, file)) {
+                    errorFound.value = true;
                 }
+                // }
                 const { callee } = path.node;
                 if (callee.type === 'MemberExpression' || callee.type === 'OptionalMemberExpression') {
                     const baseName = getBaseIdentifierName(callee);

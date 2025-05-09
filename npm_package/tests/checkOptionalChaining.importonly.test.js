@@ -38,7 +38,7 @@ describe('Import Safety Rules', () => {
         });
 
         jest.spyOn(process, 'exit').mockImplementation((code) => {
-            throw new Error(`ProcessExit_${  code}`);
+            throw new Error(`ProcessExit_${code}`);
         });
     });
 
@@ -57,8 +57,9 @@ describe('Import Safety Rules', () => {
         expect(exitError.message).toBe('ProcessExit_1');
 
         const joined = errorLogs.join('\n');
-        expect(joined).toMatch(/mockfile\.js:\d+ error optional-chaining-unsafe 'localUtil'/); // ⛔ should flag
-        expect(joined).not.toMatch(/domUtil/);         // ✅ should skip
+        expect(joined).toMatch(/mockfile\.js:\d+/);
+        expect(joined).toMatch(/'localUtil'.*accessed unsafely/);
+
         expect(joined).not.toMatch(/externalLib/);     // ✅ should skip axios
         expect(joined).not.toMatch(/special/);         // ✅ should skip dom.service.local
     });

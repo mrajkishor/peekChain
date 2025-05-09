@@ -17,16 +17,19 @@ jest.mock('fs', () => {
     };
 });
 
-// 🔧 Inline process/console mocks
-jest.spyOn(process, 'exit').mockImplementation((code) => {
-    throw new Error(`ProcessExit_${code}`);
-});
-jest.spyOn(console, 'log').mockImplementation(() => { });
-jest.spyOn(console, 'error').mockImplementation(() => { });
-jest.spyOn(console, 'warn').mockImplementation(() => { });
-jest.spyOn(console, 'info').mockImplementation(() => { });
 
 describe('Unsafe Chaining Test', () => {
+    beforeEach(() => {
+
+        //  Inline process/console mocks
+        jest.spyOn(process, 'exit').mockImplementation((code) => {
+            throw new Error(`ProcessExit_${code}`);
+        });
+        jest.spyOn(console, 'log').mockImplementation(() => { });
+        jest.spyOn(console, 'error').mockImplementation(() => { });
+        jest.spyOn(console, 'warn').mockImplementation(() => { });
+        jest.spyOn(console, 'info').mockImplementation(() => { });
+    });
     it('should exit 1 for unsafe chaining', () => {
         process.argv = ['node', 'checkOptionalChaining.js', './mockfile-unsafe.js'];
         const { runOptionalChainingCheck } = require('../lib/check.js');
