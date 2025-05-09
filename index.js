@@ -31,7 +31,7 @@ console.log(user?.name);            // ✅ safe
 
 
 console.log(user?.name?.getProfile?.().name.type); // safe
-console.log(user?.name.profile); // safe
+console.log(user?.name?.profile); // safe
 
 // // //
 // // // 🔴 2. Nested Object Access
@@ -59,7 +59,7 @@ console.log(users?.[0]?.name);      // ✅ safe
 // // // 🔴 5. Method Calls
 // // //
 user?.getProfile?.();                  // ❌ unsafe (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
-user?.getProfile?.();                  // ❌ unsafe  (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
+user?.getProfile();                  // ❌ unsafe  (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 user?.getProfile?.();                  // ❌ unsafe (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 user?.getProfile?.();               // ✅ safe
 
