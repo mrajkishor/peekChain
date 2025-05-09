@@ -46,7 +46,7 @@ console.log(list[0]);               // ❌ unsafe  (Uncaught by ESLint optional 
 console.log(list?.[0]);             // ✅ safe
 
 // // //
-// // // 🔴 4. Array → Property Access d
+// // // 🔴 4. Array → Property Access d d
 // // //
 console.log(users[0].name);         // ❌ unsafe (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 console.log(users?.[0].name);         // ❌ unsafe  (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)

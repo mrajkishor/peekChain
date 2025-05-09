@@ -77,10 +77,10 @@ function checkOptionalChainSafety(path, file) {
                 // Chain already started, but this link has no optional operator
                 // unsafe = true;
                 const line = path.node.loc?.start?.line || '?';
-                console.log(`❌ [Unsafe Optional Call] ${file}:${line}`);
+                console.log(`\n\n[Unsafe Optional Call] ${file}:${line}`);
                 console.log(`   ↪ ${path.toString()}`);
-                console.log(`   🚫 Once optional chaining starts, all links and the final call must use '?.'`);
-                return true; // ❌ unsafe
+                console.log(`   Once optional chaining starts, all links and the final call must use '?.'`);
+                return true; //  unsafe
                 // break;
             }
         }
@@ -112,7 +112,6 @@ function runOptionalChainingCheck() {
             process.exit(0);
         }
         const file = p.resolve(process.cwd(), relativePath);
-        console.log(`fileName`, file);
 
         const fileExists = existsSync(file);
         if (!file || !fileExists) {
@@ -122,7 +121,6 @@ function runOptionalChainingCheck() {
 
 
 
-        console.log(`Analyzing file: ${file}`);
 
         const code = readFileSync(file, 'utf8');
         const errorFound = { value: false };
@@ -160,16 +158,15 @@ function runOptionalChainingCheck() {
             if (!/^\s*(import|export)\s/.test(line)) {
                 for (const pattern of invalidChainingPatterns) {
                     if (pattern.test(line)) {
-                        console.log(`❌ [Invalid Pattern] ${file}:${i + 1}`);
+                        console.log(`\n\n[Invalid Pattern] ${file}:${i + 1}`);
                         console.log(`   ↪ ${line.trim()}`);
-                        console.log(`   🚫 Optional chaining cannot be used on the left-hand side of assignment, delete, or increment/decrement.`);
+                        console.log(`   Optional chaining cannot be used on the left-hand side of assignment, delete, or increment/decrement.`);
                         process.exit(1);
                     }
                 }
             }
         }
 
-        console.log(`Regex pre-checks completed`);
 
         const ast = parser.parse(code, {
             sourceType: 'module',
@@ -236,7 +233,6 @@ function runOptionalChainingCheck() {
         }
 
 
-        // console.log(`STATIC_SAFE_CALLS populated`, [...STATIC_SAFE_CALLS]);
 
 
         traverse(ast, {
@@ -352,9 +348,9 @@ function runOptionalChainingCheck() {
 
                     // You could collect this location or otherwise record the violation as needed
                     if (localIdentifiers.has(baseName)) {
-                        console.log(`❌ [Unsafe Access] ${file}:${line}`);
+                        console.log(`\n\n[Unsafe Access] ${file}:${line}`);
                         console.log(`   ↪ ${path.toString()}`);
-                        console.log(`   ⚠️ '${baseName}' is local, but some part of the chain is accessed unsafely after optional chaining.`);
+                        console.log(`   '${baseName}' is local, but some part of the chain is accessed unsafely after optional chaining.`);
                         errorFound.value = true;
                     }
                 }
@@ -370,9 +366,9 @@ function runOptionalChainingCheck() {
                     const baseName = getBaseIdentifierName(callee);
                     if (localIdentifiers.has(baseName) && !isFullyOptionalChain(path.get('callee'))) {
                         const line = path.node.loc?.start?.line || '?';
-                        console.log(`❌ [Unsafe Call Access] ${file}:${line}`);
+                        console.log(`\n\n[Unsafe Call Access] ${file}:${line}`);
                         console.log(`   ↪ ${path.toString()}`);
-                        console.log(`   ⚠️ '${baseName}' is local, but function/property call chain is not safely guarded.`);
+                        console.log(`   '${baseName}' is local, but function/property call chain is not safely guarded.`);
                         errorFound.value = true;
                     }
                 }
@@ -388,9 +384,9 @@ function runOptionalChainingCheck() {
                         (init.type === 'Literal' && init.value === null);
 
                     if (unsafe) {
-                        console.log(`❌ [Unguarded Destructuring] ${file}:${line}`);
+                        console.log(`\n\n[Unguarded Destructuring] ${file}:${line}`);
                         console.log(`   ↪ const { ... } = ${init?.name || 'null/undefined'}`);
-                        console.log(`   💡 Add fallback: const { name } = ${init?.name || 'obj'} ?? {}`);
+                        console.log(`   Add fallback: const { name } = ${init?.name || 'obj'} ?? {}`);
                         errorFound.value = true;
                     }
                 }
@@ -414,9 +410,9 @@ function runOptionalChainingCheck() {
                     const base = arg.object.name;
                     if (localIdentifiers.has(base)) {
                         const line = path.node.loc?.start?.line || '?';
-                        console.log(`❌ [Unsafe Delete Access] ${file}:${line}`);
+                        console.log(`\n\n[Unsafe Delete Access] ${file}:${line}`);
                         console.log(`   ↪ ${path.toString()}`);
-                        console.log(`   ⚠️ '${base}' may be null/undefined. Use optional chaining: delete ${base}?.prop`);
+                        console.log(`   '${base}' may be null/undefined. Use optional chaining: delete ${base}?.prop`);
                         errorFound.value = true;
                     }
                 }
@@ -434,7 +430,6 @@ function runOptionalChainingCheck() {
 
         if (errorFound.value) {
             console.log('FAIL');
-            console.log('FAIL');
             process.exit(1);
         } else {
             console.log('All checks passed.');
@@ -447,7 +442,7 @@ function runOptionalChainingCheck() {
             throw e; // Let Jest test catch this
         }
 
-        console.log('🔥 Unexpected error during optional chaining analysis:', e);
+        console.log('Unexpected error during optional chaining analysis:', e);
         console.log('FAIL');
         process.exit(1); // fallback exit
 
