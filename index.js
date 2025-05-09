@@ -32,7 +32,7 @@ console.log(user?.name?.getProfile()); // safe
 console.log(user?.name?.profile); // safe
 
 // // //
-// // // 🔴 2. Nested Object Access
+// // // 🔴 2. Nested Object Access test
 // // //
 console.log(user.profile.name);     // ❌ unsafe  (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 console.log(user.profile?.name);     // ❌ unsafe  (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)

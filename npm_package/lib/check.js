@@ -100,7 +100,7 @@ function runOptionalChainingCheck() {
 
     try {
 
-        console.log(`Script started...`);
+        console.log(`Script started...`); // test
 
         const STATIC_SAFE_CALLS = new Set();
 
