@@ -2,7 +2,7 @@
 // import special from 'dom.service.local';
 import localUtil from './utils';
 
-const result1 = localUtil.fetchData.name; // ❌ unsafe dsa asd
+const result1 = localUtil.fetchData.name; // ❌ unsafe dsa asd d
 // const result2 = externalLib?.get.name;     // ✅ safe
 // const result3 = special?.thing.name;       // ❌ should be skipped adsf
 
