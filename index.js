@@ -6,7 +6,7 @@ import localUtil from './utils';
 const result1 = localUtil.fetchData.name; // test
 const result2 = externalLib?.get.name;
 const result3 = special?.thing.name;
-console.log(result1, result2, result3);
+console.log(result1, result2, result3); // test
 
 
 
