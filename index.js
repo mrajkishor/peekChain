@@ -4,7 +4,7 @@ import special from 'dom.service.local';
 import localUtil from './utils';
 
 
-const result1 = localUtil?.fetchData?.name().type; // ✅ safe d e test dd
+const result1 = localUtil?.fetchData?.name?.().type; // ✅ safe d e test dd
 const result15 = localUtil?.fetchData?.name; // ❌ unsafe d
 const result2 = externalLib?.get.name;     // ✅ safe
 const result3 = special?.thing.name;       // ❌ should be skipped adsf
@@ -59,7 +59,7 @@ console.log(users?.[0]?.name);      // ✅ safe
 // // // 🔴 5. Method Calls
 // // //
 user?.getProfile?.();                  // ❌ unsafe (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
-user?.getProfile();                  // ❌ unsafe  (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
+user?.getProfile();                  // ❌ unsafe  d (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 user?.getProfile?.();                  // ❌ unsafe (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 user?.getProfile?.();               // ✅ safe
 
