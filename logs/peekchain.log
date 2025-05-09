@@ -1,5 +1,6 @@
 Script started...
 fileName
-Analyzing file: E:\temp\Npm_pkg\peekChain\index.js
-Regex pre-checks completed
-All checks passed.
+Analyzing file: E:\temp\Npm_pkg\peekChain\npm_package\lib\check.js
+❌ [Invalid Pattern] E:\temp\Npm_pkg\peekChain\npm_package\lib\check.js:170
+   ↪ /\+\+\s*[a-zA-Z_$][\w$]*\?\.\w+/,         // ++user?.count
+   🚫 Optional chaining cannot be used on the left-hand side of assignment, delete, or increment/decrement.

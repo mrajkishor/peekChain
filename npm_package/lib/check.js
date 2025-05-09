@@ -1,13 +1,13 @@
 // checkOptionalChaining.js
 
 const { existsSync, readFileSync, mkdirSync, appendFileSync } = require('fs');
-const path = require('path');
+const p = require('path');
 const parser = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
 
 
-const logDir = path.resolve(process.cwd(), 'logs');
-const logFilePath = path.join(logDir, 'peekchain.log');
+const logDir = p.resolve(process.cwd(), 'logs');
+const logFilePath = p.join(logDir, 'peekchain.log');
 
 // Ensure logs directory exists
 if (!existsSync(logDir)) {
@@ -20,18 +20,102 @@ require('fs').writeFileSync(logFilePath, '', 'utf8');
 // Log helper function
 
 function log(message) {
-    appendFileSync(logFilePath, message + '\n', 'utf8');
+    appendFileSync(logFilePath, `${message}\n`, 'utf8');
     // Capture all logs in test mode for full error inspection
     if (process.env.NODE_ENV === 'test') {
         console.error(message);
     }
 }
-
+function isFullyOptionalChain(path) {
+    // Traverse down the chain from the current member expression
+    let current = path;
+    while (current && (current.isMemberExpression() || current.isOptionalMemberExpression())) {
+        if (!current.isOptionalMemberExpression()) {
+            // This node is a normal MemberExpression (no optional chaining at this link)
+            return false;
+        }
+        if (current.isOptionalMemberExpression() && !current.node.optional) {
+            // This node is an OptionalMemberExpression, but `.optional` is false,
+            // meaning this particular access used a plain dot.
+            return false;
+        }
+        // Move to the next object in the chain (e.g., traverse from `obj?.foo.bar` to `obj?.foo`)
+        current = current.get("object");
+    }
+    // If we exited the loop without finding a non-optional link, the chain is fully optional
+    return true;
+}
 // Needed for __dirname in ESM
 // import { fileURLToPath } from 'url';
 // import { argv } from 'process';
+// 🧠 Get root identifier from any nested chain
+function getBaseIdentifierName(node) {
+    let current = node;
+    while (current && (current.type === 'MemberExpression' || current.type === 'OptionalMemberExpression')) {
+        current = current.object;
+    }
+    return current?.type === 'Identifier' ? current.name : null;
+}
+
+function checkOptionalChainSafety(path, file) {
+
+    const chainLinks = [];
+    let { node } = path;
+    // Walk down the callee/member chain and collect links
+    while (
+        node.type === 'CallExpression' || node.type === 'OptionalCallExpression' ||
+        node.type === 'MemberExpression' || node.type === 'OptionalMemberExpression'
+    ) {
+        chainLinks.push(node);
+        // Move to the next link: callee of calls, object of member access
+        if (node.type === 'CallExpression' || node.type === 'OptionalCallExpression') {
+            node = node.callee;
+        } else {
+            node = node.object;
+        }
+    }
+
+    // Now analyze the chain from base to top
+    let chainActive = false;
+    // let unsafe = false;
+    // Traverse from base object up to the final call
+    for (let i = chainLinks.length - 1; i >= 0; i--) {
+        const link = chainLinks[i];
+        const isOptionalType = link.type === 'OptionalMemberExpression' || link.type === 'OptionalCallExpression';
+        const hasOptionalOperator = isOptionalType && link.optional === true;
+
+        const isLast = i === 0; // <- Add this
+        const isCall = link.type === 'CallExpression' || link.type === 'OptionalCallExpression';
 
 
+        if (chainActive && (!isOptionalType || link.optional === false)) {
+
+            if (!(isLast && isCall)) {
+
+
+
+                // Chain already started, but this link has no optional operator
+                // unsafe = true;
+                const line = path.node.loc?.start?.line || '?';
+                log(`❌ [Unsafe Optional Call] ${file}:${line}`);
+                log(`   ↪ ${path.toString()}`);
+                log(`   🚫 Once optional chaining starts, all links and the final call must use '?.'`);
+                return true; // ❌ unsafe
+                // break;
+            }
+        }
+        if (hasOptionalOperator) {
+            // This link has a ?. operator, so the optional chain is (or remains) active
+            chainActive = true;
+        }
+    }
+
+    // if (unsafe) { // never executed due to this earlier block
+    //     // Report or collect the error (here we just log for illustration)
+    //     log(`Unsafe optional call at line ${path.node.loc.start.line}: ${path.toString()}`);
+    // }
+    return false; // ✅ safe
+}
 function runOptionalChainingCheck() {
 
     try {
@@ -48,7 +132,7 @@ function runOptionalChainingCheck() {
             log(`No file argument provided.`);
             process.exit(0);
         }
-        const file = path.resolve(process.cwd(), relativePath);
+        const file = p.resolve(process.cwd(), relativePath);
         log(`fileName`, file);
 
         const fileExists = existsSync(file);
@@ -62,7 +146,7 @@ function runOptionalChainingCheck() {
         log(`Analyzing file: ${file}`);
 
         const code = readFileSync(file, 'utf8');
-        let errorFound = false;
+        const errorFound = { value: false };
 
 
 
@@ -94,13 +178,14 @@ function runOptionalChainingCheck() {
         const lines = code.split('\n');
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
-            if (/^\s*(import|export)\s/.test(line)) continue;
-            for (const pattern of invalidChainingPatterns) {
-                if (pattern.test(line)) {
-                    log(`❌ [Invalid Pattern] ${file}:${i + 1}`);
-                    log(`   ↪ ${line.trim()}`);
-                    log(`   🚫 Optional chaining cannot be used on the left-hand side of assignment, delete, or increment/decrement.`);
-                    process.exit(1);
+            if (!/^\s*(import|export)\s/.test(line)) {
+                for (const pattern of invalidChainingPatterns) {
+                    if (pattern.test(line)) {
+                        log(`❌ [Invalid Pattern] ${file}:${i + 1}`);
+                        log(`   ↪ ${line.trim()}`);
+                        log(`   🚫 Optional chaining cannot be used on the left-hand side of assignment, delete, or increment/decrement.`);
+                        process.exit(1);
+                    }
                 }
             }
         }
@@ -119,60 +204,7 @@ function runOptionalChainingCheck() {
         const localIdentifiers = new Set();
 
 
-        // 🧠 Get root identifier from any nested chain
-        function getBaseIdentifierName(node) {
-            while (node && (node.type === 'MemberExpression' || node.type === 'OptionalMemberExpression')) {
-                node = node.object;
-            }
-            return node?.type === 'Identifier' ? node.name : null;
-        }
-        function checkOptionalChainSafety(path) {
-            const chainLinks = [];
-            let node = path.node;
-            // Walk down the callee/member chain and collect links
-            while (
-                node.type === 'CallExpression' || node.type === 'OptionalCallExpression' ||
-                node.type === 'MemberExpression' || node.type === 'OptionalMemberExpression'
-            ) {
-                chainLinks.push(node);
-                // Move to the next link: callee of calls, object of member access
-                if (node.type === 'CallExpression' || node.type === 'OptionalCallExpression') {
-                    node = node.callee;
-                } else {
-                    node = node.object;
-                }
-            }
 
-            // Now analyze the chain from base to top
-            let chainActive = false;
-            let unsafe = false;
-            // Traverse from base object up to the final call
-            for (let i = chainLinks.length - 1; i >= 0; i--) {
-                const link = chainLinks[i];
-                const isOptionalType = link.type === 'OptionalMemberExpression' || link.type === 'OptionalCallExpression';
-                const hasOptionalOperator = isOptionalType && link.optional === true;
-                if (chainActive && (!isOptionalType || link.optional === false)) {
-                    // Chain already started, but this link has no optional operator
-                    unsafe = true;
-                    const line = path.node.loc?.start?.line || '?';
-                    log(`❌ [Unsafe Optional Call] ${file}:${line}`);
-                    log(`   ↪ ${path.toString()}`);
-                    log(`   🚫 Once optional chaining starts, all links and the final call must use '?.'`);
-                    errorFound = true;
-                    process.exit(1); // immediate stop
-                    // break;
-                }
-                if (hasOptionalOperator) {
-                    // This link has a ?. operator, so the optional chain is (or remains) active
-                    chainActive = true;
-                }
-            }
-
-            // if (unsafe) { // never executed due to this earlier block
-            //     // Report or collect the error (here we just log for illustration)
-            //     log(`Unsafe optional call at line ${path.node.loc.start.line}: ${path.toString()}`);
-            // }
-        }
 
 
         // function isFullyOptionalChain(path) {
@@ -199,25 +231,7 @@ function runOptionalChainingCheck() {
         // }
 
         // Helper function to check if a member chain is fully optional
-        function isFullyOptionalChain(path) {
-            // Traverse down the chain from the current member expression
-            let current = path;
-            while (current && (current.isMemberExpression() || current.isOptionalMemberExpression())) {
-                if (!current.isOptionalMemberExpression()) {
-                    // This node is a normal MemberExpression (no optional chaining at this link)
-                    return false;
-                }
-                if (current.isOptionalMemberExpression() && !current.node.optional) {
-                    // This node is an OptionalMemberExpression, but `.optional` is false,
-                    // meaning this particular access used a plain dot.
-                    return false;
-                }
-                // Move to the next object in the chain (e.g., traverse from `obj?.foo.bar` to `obj?.foo`)
-                current = current.get("object");
-            }
-            // If we exited the loop without finding a non-optional link, the chain is fully optional
-            return true;
-        }
+
         traverse(ast, {
             ImportDeclaration(path) {
                 const importSource = path.node.source.value;
@@ -347,7 +361,7 @@ function runOptionalChainingCheck() {
             //     }
             // },
             // Handle both OptionalMemberExpression and MemberExpression nodes
-            "MemberExpression|OptionalMemberExpression"(path) {
+            "MemberExpression|OptionalMemberExpression": function checkMemberExpression(path) {
                 // Only check the outermost member of a chain to avoid duplicate checks
                 if (path.parentPath.isMemberExpression() || path.parentPath.isOptionalMemberExpression()) {
                     return;  // Skip if parent is also a property access (not the chain's end)
@@ -362,15 +376,17 @@ function runOptionalChainingCheck() {
                         log(`❌ [Unsafe Access] ${file}:${line}`);
                         log(`   ↪ ${path.toString()}`);
                         log(`   ⚠️ '${baseName}' is local, but some part of the chain is accessed unsafely after optional chaining.`);
-                        errorFound = true;
+                        errorFound.value = true;
                     }
                 }
             },
             CallExpression(path) {
                 if (path.node.type === 'CallExpression') {
-                    checkOptionalChainSafety(path); // test
+                    if (checkOptionalChainSafety(path, file)) {
+                        errorFound.value = true;
+                    }
                 }
-                const callee = path.node.callee;
+                const { callee } = path.node;
                 if (callee.type === 'MemberExpression' || callee.type === 'OptionalMemberExpression') {
                     const baseName = getBaseIdentifierName(callee);
                     if (localIdentifiers.has(baseName) && !isFullyOptionalChain(path.get('callee'))) {
@@ -378,14 +394,14 @@ function runOptionalChainingCheck() {
                         log(`❌ [Unsafe Call Access] ${file}:${line}`);
                         log(`   ↪ ${path.toString()}`);
                         log(`   ⚠️ '${baseName}' is local, but function/property call chain is not safely guarded.`);
-                        errorFound = true;
+                        errorFound.value = true;
                     }
                 }
             },
             VariableDeclarator(path) { // first 
                 const line = path.node.loc?.start?.line || '?';
                 if (path.node.id.type === 'ObjectPattern') {
-                    const init = path.node.init;
+                    const { init } = path.node;
                     const unsafe =
                         !init ||
                         init.type === 'Identifier' ||
@@ -396,7 +412,7 @@ function runOptionalChainingCheck() {
                         log(`❌ [Unguarded Destructuring] ${file}:${line}`);
                         log(`   ↪ const { ... } = ${init?.name || 'null/undefined'}`);
                         log(`   💡 Add fallback: const { name } = ${init?.name || 'obj'} ?? {}`);
-                        errorFound = true;
+                        errorFound.value = true;
                     }
                 }
             },
@@ -422,20 +438,22 @@ function runOptionalChainingCheck() {
                         log(`❌ [Unsafe Delete Access] ${file}:${line}`);
                         log(`   ↪ ${path.toString()}`);
                         log(`   ⚠️ '${base}' may be null/undefined. Use optional chaining: delete ${base}?.prop`);
-                        errorFound = true;
+                        errorFound.value = true;
                     }
                 }
             },
             OptionalCallExpression(path) {
                 // Handle optional calls separately
-                checkOptionalChainSafety(path);
+                if (checkOptionalChainSafety(path, file)) {
+                    errorFound.value = true;
+                }
             }
 
 
 
         });
 
-        if (errorFound) {
+        if (errorFound.value) {
             log('FAIL');
             console.log('FAIL');
             process.exit(1);
