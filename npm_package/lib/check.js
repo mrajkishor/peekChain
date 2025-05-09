@@ -367,9 +367,9 @@ function runOptionalChainingCheck() {
                 }
             },
             CallExpression(path) {
-                //  if (path.node.type === 'CallExpression') {
-                checkOptionalChainSafety(path);
-                //  }
+                if (path.node.type === 'CallExpression') {
+                    checkOptionalChainSafety(path);
+                }
                 const callee = path.node.callee;
                 if (callee.type === 'MemberExpression' || callee.type === 'OptionalMemberExpression') {
                     const baseName = getBaseIdentifierName(callee);
