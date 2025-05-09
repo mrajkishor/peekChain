@@ -2,6 +2,6 @@ Script started...
 fileName
 Analyzing file: E:\temp\Npm_pkg\peekChain\index.js
 Regex pre-checks completed
-
-E:\temp\Npm_pkg\peekChain\index.js:19 error: optional chaining starts but not all links use '?.' (optional-chaining-unsafe-call)
-
+❌ [Unsafe Optional Call] E:\temp\Npm_pkg\peekChain\index.js:7
+   ↪ localUtil?.fetchData?.name()
+   🚫 Once optional chaining starts, all links and the final call must use '?.'

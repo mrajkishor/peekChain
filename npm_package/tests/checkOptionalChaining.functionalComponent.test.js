@@ -19,7 +19,7 @@ jest.mock('fs', () => {
 });
 
 describe('Functional Dashboard.jsx Test', () => {
-    let processExitMock, consoleErrorMock;
+    let processExitMock; let consoleErrorMock;
 
     beforeEach(() => {
         process.env.NODE_ENV = 'test';

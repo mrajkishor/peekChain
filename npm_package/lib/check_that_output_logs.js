@@ -20,7 +20,7 @@ require('fs').writeFileSync(logFilePath, '', 'utf8');
 // Log helper function
 
 function log(message) {
-    appendFileSync(logFilePath, message + '\n', 'utf8');
+    appendFileSync(logFilePath, `${message  }\n`, 'utf8');
     // Capture all logs in test mode for full error inspection
     if (process.env.NODE_ENV === 'test') {
         console.error(message);
@@ -130,7 +130,7 @@ function runOptionalChainingCheck() {
         }
         function checkOptionalChainSafety(path) {
             const chainLinks = [];
-            let node = path.node;
+            let {node} = path;
             // Walk down the callee/member chain and collect links
             while (
                 node.type === 'CallExpression' || node.type === 'OptionalCallExpression' ||
@@ -358,7 +358,7 @@ function runOptionalChainingCheck() {
             //     }
             // },
             // Handle both OptionalMemberExpression and MemberExpression nodes
-            "MemberExpression|OptionalMemberExpression"(path) {
+            "MemberExpression|OptionalMemberExpression": function(path) {
                 // Only check the outermost member of a chain to avoid duplicate checks
                 if (path.parentPath.isMemberExpression() || path.parentPath.isOptionalMemberExpression()) {
                     return;  // Skip if parent is also a property access (not the chain's end)
@@ -383,7 +383,7 @@ function runOptionalChainingCheck() {
                 //  if (path.node.type === 'CallExpression') {
                 checkOptionalChainSafety(path);
                 //  }
-                const callee = path.node.callee;
+                const {callee} = path.node;
                 if (callee.type === 'MemberExpression' || callee.type === 'OptionalMemberExpression') {
                     const baseName = getBaseIdentifierName(callee);
                     if (localIdentifiers.has(baseName) && !isFullyOptionalChain(path.get('callee'))) {
@@ -400,7 +400,7 @@ function runOptionalChainingCheck() {
             VariableDeclarator(path) { // first 
                 const line = path.node.loc?.start?.line || '?';
                 if (path.node.id.type === 'ObjectPattern') {
-                    const init = path.node.init;
+                    const {init} = path.node;
                     const unsafe =
                         !init ||
                         init.type === 'Identifier' ||

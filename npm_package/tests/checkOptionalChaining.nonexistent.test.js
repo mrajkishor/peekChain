@@ -3,9 +3,9 @@ jest.mock('fs', () => {
     const actualFs = jest.requireActual('fs');
     return {
         ...actualFs,
-        existsSync: jest.fn((path) => {
-            return path && !path.includes('nonexistent.js'); // nonexistent.js should return false
-        }),
+        existsSync: jest.fn((path) => 
+             path && !path.includes('nonexistent.js') // nonexistent.js should return false
+        ),
         readFileSync: jest.fn(() => ''), // won't be called but mock anyway
     };
 });

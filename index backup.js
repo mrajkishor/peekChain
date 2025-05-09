@@ -27,6 +27,9 @@ console.log(user.name);             // ❌ unsafe (Uncaught by ESLint optional c
 console.log(user?.name);            // ✅ safe
 
 
+console.log(user?.name?.getProfile()); // safe
+console.log(user?.name?.profile); // safe
+
 // // //
 // // // 🔴 2. Nested Object Access
 // // //

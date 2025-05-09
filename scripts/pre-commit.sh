@@ -1,6 +1,7 @@
 #!/bin/sh
 
 echo "🔍 Running ESLint..."
+
 FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|jsx)$')
 
 if [ -z "$FILES" ]; then
@@ -8,11 +9,9 @@ if [ -z "$FILES" ]; then
   exit 0
 fi
 
-npx eslint $FILES || exit 1
+echo "$FILES" | xargs npx eslint || exit 1
 
 echo "🔍 Running Peekchain..."
-for FILE in $FILES; do
-  npx peekchain "$FILE" || exit 1
-done
+echo "$FILES" | xargs -n 1 npx peekchain || exit 1
 
 echo "✅ All checks passed"

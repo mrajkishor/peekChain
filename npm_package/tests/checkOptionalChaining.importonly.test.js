@@ -38,7 +38,7 @@ describe('Import Safety Rules', () => {
         });
 
         jest.spyOn(process, 'exit').mockImplementation((code) => {
-            throw new Error('ProcessExit_' + code);
+            throw new Error(`ProcessExit_${  code}`);
         });
     });
 
