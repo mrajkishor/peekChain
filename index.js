@@ -4,11 +4,12 @@ import special from 'dom.service.local';
 import localUtil from './utils';
 
 
-const result1 = localUtil?.fetchData?.name(); // ❌ unsafe d
+const result1 = localUtil?.fetchData?.name?.().type; // ✅ safe
+const result15 = localUtil?.fetchData?.name; // ❌ unsafe d
 const result2 = externalLib?.get.name;     // ✅ safe
 const result3 = special?.thing.name;       // ❌ should be skipped adsf
 
-console.log(result1, result2, result3);
+console.log(result1, result2, result3, result15);
 
 const user = null;
 const list = null;
@@ -29,8 +30,8 @@ console.log(user?.name);             // ❌ unsafe (Uncaught by ESLint optional 
 console.log(user?.name);            // ✅ safe
 
 
-console.log(user?.name?.getProfile?.()); // safe
-console.log(user?.name?.profile); // safe
+console.log(user?.name?.getProfile?.().name.type); // safe
+console.log(user?.name.profile); // safe
 
 // // //
 // // // 🔴 2. Nested Object Access
