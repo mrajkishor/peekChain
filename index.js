@@ -64,7 +64,7 @@ config.api.fetch();                 // ❌ unsafe (Uncaught by ESLint optional c
 config?.api.fetch();                 // ❌ unsafe (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 config.api?.fetch();                 // ❌ unsafe (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
 config.api.fetch?.();                 // ❌ unsafe (Uncaught by ESLint optional chain plugins, use peekchain as pre-commit hook to catch it)
-config?.api?.fetch?.();             // ✅ safe
+config?.api?.fetch?.();             // ✅ safe a
 
 // // //
 // // // 🔴 7. Chain with Method
